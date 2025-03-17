@@ -1,0 +1,15 @@
+%h1= @coupon.name
+
+%p
+  %strong Discount:
+  = number_to_currency(@coupon.discount)
+
+%p
+  %strong Created At:
+  = @coupon.created_at.strftime("%B %d, %Y %I:%M %p")
+
+%p
+  %strong Updated At:
+  = @coupon.updated_at.strftime("%B %d, %Y %I:%M %p")
+
+= link_to "Back", admin_coupons_path, class: "btn btn-secondary"

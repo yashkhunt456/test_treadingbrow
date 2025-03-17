@@ -1,0 +1,38 @@
+= form_with model: [:admin, @service], local: true do |f|
+  - if @service.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@service.errors.count, 'error')} prohibited this service from being saved:"
+      %ul
+        - @service.errors.full_messages.each do |message|
+          %li= message
+
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: "form-control", required: true
+
+  .form-group
+    = f.label :price
+    = f.number_field :price, class: "form-control", step: 0.01, required: true
+
+  .form-group
+    = f.label :duration
+    = f.number_field :duration, class: "form-control", required: true
+
+  .form-group
+    = f.label :category
+    = f.select :category, Service.categories.map { |key, _| [key.humanize, key] }, 
+               { prompt: "Select Service Category" }, 
+               class: "form-control"
+
+  .form-group
+    = f.label :image, "Service Thumb"
+    = f.file_field :image, class: "form-control", id: "formFile"
+
+  - if @service.image.attached?
+    .mt-3
+      %p Current Image:
+      = image_tag @service.image, class: "img-thumbnail", style: "max-width: 200px;"
+
+  .form-group
+    = f.submit "Save", class: "btn btn-success mt-4"
+    = link_to "Cancel", admin_services_path, class: "btn btn-secondary mt-4"

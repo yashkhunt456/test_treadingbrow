@@ -1,0 +1,158 @@
+<div class="container-fluid px-md-4 pt-md-4 main-content">
+	<div class="heading-button">
+	  <h1>Services</h1>
+	  <button class="btn btn-primary px-4"  data-bs-toggle="modal" data-bs-target="#addServices">Add Services</button></div>
+	</div>
+
+	<% grouped_services = @services.group_by { |s| s.category.presence || "others" } %>
+
+	<% Service.categories.keys.each do |category| %>
+	<% if grouped_services[category] %>
+		<h2 class="mt-4"><%= category.humanize %></h2> 
+
+		<div class="services-block">
+		<% grouped_services[category].each do |service| %>
+			<%= link_to member_service_path(service), style: "text-decoration: none; color: inherit;" do %>
+			<div class="service-box">
+				<div class="service-img-name">
+				<div class="service-img">
+					<% if service.image.attached? %>
+					<%= image_tag service.small_variant, alt: service.name %>
+					<% end %>
+				</div>
+				<div class="service-info">
+					<h3><%= service.name %></h3>
+					<span class="service-price"><%= number_to_currency(service.price) %></span>
+				</div>
+				</div>
+				<hr>
+				<span class="appTime">Approx Time: <%= service.duration %> min</span>
+        <% if service.coupon_services.present? %>
+          <div class="coupon-services mt-2 Iscombo">
+            <strong>Available Combo:</strong>
+            <% service.coupon_services.each do |coupon_service| %>
+              <%= coupon_service.coupon.name %> - $<%= coupon_service.coupon.discount %> off
+            <% end %>
+          </div>
+        <% else %>
+          <div class="coupon-services mt-2 Iscombo">
+            <p>No coupons available</p>
+          </div>
+        <% end %>
+			</div>
+			<% end %>
+		<% end %>
+		</div>
+	<% end %>
+	<% end %>
+
+
+</div>
+
+<div class="modal fade" id="addServices" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">Add New Service</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <%= form_with model: [:member, @service], url: member_services_path, local: true, id: "memberServiceForm" do |f| %>
+
+          <!-- Error Handling -->
+          <div id="errorMessagesMember" class="alert alert-danger d-none">
+            <h5 id="errorHeaderMember"></h5>
+            <ul id="errorListMember"></ul>
+          </div>
+
+          <!-- Service Category -->
+          <div class="form-floating mb-3">
+            <%= f.label :category, "Service Category", class: "form-label" %>
+            <%= f.select :category, Service.categories.map { |key, value| [key.humanize, key] }, 
+                          { prompt: "Select Service Category" }, 
+                          class: "form-control selectpicker form-select service-select", required: true %>
+          </div>
+
+          <!-- Service Name -->
+          <div class="form-floating mb-3">
+            <%= f.text_field :name, class: "form-control", placeholder: "Service Name", id: "serviceNameMember", required: true %>
+            <%= f.label :name, "Service Name" %>
+          </div>
+
+          <!-- Price Field -->
+          <div class="input-group mb-3">
+            <div class="form-floating">
+              <%= f.number_field :price, class: "form-control", placeholder: "Price", step: 0.01, id: "servicePriceMember", required: true %>
+              <%= f.label :price, "Price" %>
+            </div>
+            <span class="input-group-text">$</span>
+          </div>
+
+          <!-- Duration -->
+          <div class="form-floating mb-3">
+            <%= f.number_field :duration, class: "form-control", placeholder: "Duration (minutes)", id: "serviceDurationMember", required: true %>
+            <%= f.label :duration, "Duration (minutes)" %>
+          </div>
+
+          <!-- Service Thumbnail -->
+          <div class="mb-3">
+            <%= f.label :image, "Service Thumb (optional)", class: "form-label" %>
+            <%= f.file_field :image, class: "form-control", id: "formFileMember" %>
+          </div>
+
+          <!-- Submit & Cancel Buttons -->
+          <div class="modal-footer">
+            <%= f.submit "Add Service", class: "btn btn-primary px-5", id: "submitButtonMember" %>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("memberServiceForm").addEventListener("submit", function(event) {
+      let errors = [];
+
+      // Validate fields
+      let name = document.getElementById("serviceNameMember").value.trim();
+      let price = document.getElementById("servicePriceMember").value.trim();
+      let duration = document.getElementById("serviceDurationMember").value.trim();
+
+      if (name === "") {
+        errors.push("Service Name cannot be blank.");
+      }
+      if (price === "" || isNaN(price) || parseFloat(price) <= 0) {
+        errors.push("Please enter a valid price.");
+      }
+      if (duration === "" || isNaN(duration) || parseInt(duration) <= 0) {
+        errors.push("Please enter a valid duration.");
+      }
+
+      // If errors exist, prevent form submission and show errors
+      if (errors.length > 0) {
+        event.preventDefault();
+        let errorMessages = document.getElementById("errorMessagesMember");
+        let errorList = document.getElementById("errorListMember");
+        let errorHeader = document.getElementById("errorHeaderMember");
+
+        errorList.innerHTML = "";
+        errors.forEach(error => {
+          let li = document.createElement("li");
+          li.textContent = error;
+          errorList.appendChild(li);
+        });
+
+        errorHeader.textContent = `${errors.length} error(s) prohibited this service from being saved:`;
+        errorMessages.classList.remove("d-none");
+      }
+    });
+  });
+</script>
+

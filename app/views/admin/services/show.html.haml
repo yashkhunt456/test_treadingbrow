@@ -1,0 +1,25 @@
+%h1= @service.name
+
+%p
+  %strong Category:
+  = @service.category.present? ? @service.category.humanize : "Uncategorized"
+
+%p
+  %strong Price:
+  = number_to_currency(@service.price)
+
+%p
+  %strong Duration:
+  = "#{@service.duration} minutes"
+
+- if @service.image.attached?
+  .mb-3
+    %strong Service Image:
+    %br
+    = image_tag @service.medium_variant, class: "img-thumbnail rounded-img"
+
+= link_to "Edit", edit_admin_service_path(@service), class: "btn btn-warning"
+= link_to "Back", admin_services_path, class: "btn btn-secondary"
+= link_to "Delete", admin_service_path(@service), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger"
+
+

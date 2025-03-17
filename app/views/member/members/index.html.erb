@@ -1,0 +1,178 @@
+<h1>Members</h1>
+
+<button class="btn btn-primary px-4 mb-4" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+  Add Member
+</button>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Services</th>
+      <th>Coupons</th>
+      <th>Remaining Services</th>
+      <th>Availed Services</th>
+      <th>Actions</th>
+      <th>Redeem</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @members.each do |member| %>
+      <% if member.coupon_services_quantity.present? %>
+        <% coupon_service_keys = member.coupon_services_quantity.keys %>
+        <% coupon_ids = coupon_service_keys.map { |key| key.split("_").first } %>
+        <% service_ids = coupon_service_keys.map { |key| key.split("_").last } %>
+
+        <% coupons = Coupon.where(id: coupon_ids).index_by(&:id) %>
+        <% services = Service.where(id: service_ids).index_by(&:id) %>
+      <% else %>
+        <% coupons = {} %>
+        <% services = {} %>
+      <% end %>
+      
+      <tr>
+        <td><%= member.customer_id %></td>
+        <td><%= member.name %></td>
+        <td><%= member.email %></td>
+        <td>
+          <% if member.coupon_services_quantity.present? %>
+            <% member.coupon_services_quantity.each do |coupon_id, services| %>
+              <% if services.is_a?(Hash) %>
+                <% services.each do |service_id, quantity| %>
+                  <% service = Service.find_by(id: service_id) %>
+                  <% if service %>
+                    <%= service.name %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% else %>
+            No Services
+          <% end %>
+        </td>
+        <td><%= member.coupons.map(&:name).join(", ") %></td>
+        
+        <td>
+          <% if member.coupon_services_quantity.present? %>
+            <% member.coupon_services_quantity.each do |coupon_id, services| %>
+              <% if services.is_a?(Hash) %>
+                <% services.each do |service_id, total_quantity| %>
+                  <% availed_quantity = CouponService.where(coupon_id: coupon_id, service_id: service_id).sum(:quantity) || 0 %>
+                  <%= "#{total_quantity} / #{availed_quantity}" %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% else %>
+            No Availed Services
+          <% end %>
+        </td>
+        
+        <td>
+          <% if member.coupon_services_quantity.present? %>
+            <% member.coupon_services_quantity.each do |coupon_id, services| %>
+              <% if services.is_a?(Hash) %>
+                <% services.each do |service_id, total_quantity| %>
+                  <% availed_quantity = CouponService.where(coupon_id: coupon_id, service_id: service_id).sum(:quantity) || 0 %>
+                  <%= -total_quantity + availed_quantity %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% else %>
+            No Remaining Services
+          <% end %>
+        </td>
+        
+        <td>
+          <%= link_to admin_member_path(member), class: "mx-1", title: "View" do %>
+            <img src="<%= asset_path('view.svg') %>" alt="View" width="20" height="20">
+          <% end %>
+          
+          <%= link_to edit_admin_member_path(member), class: "mx-1", title: "Edit" do %>
+            <img src="<%= asset_path('edit.svg') %>" alt="Edit" width="20" height="20">
+          <% end %>
+          
+          <%= link_to admin_member_path(member), method: :delete, data: { confirm: "Are you sure?" }, class: "mx-1", title: "Delete" do %>
+            <img src="<%= asset_path('delete.svg') %>" alt="Delete" width="20" height="20">
+          <% end %>
+        </td>
+        
+        <td>
+          <% if member.coupon_services_quantity.present? %>
+            <% member.coupon_services_quantity.each do |coupon_id, services| %>
+              <% if services.is_a?(Hash) %>
+                <% services.each do |service_id, quantity| %>
+                  <% if quantity > 0 %>
+                    <% service = Service.find_by(id: service_id) %>
+                    <%= button_to "Redeem #{service&.name}", redeem_admin_member_path(member, coupon_id: coupon_id, service_id: service_id), method: :patch, class: "btn btn-success btn-sm w-100" %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="addMemberModalLabel">Add New Member</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <%= form_with(url: admin_members_path, model: @member, local: true) do |f| %>
+          
+          <!-- Error Handling -->
+          <% if @member.errors.any? %>
+            <div id="error_explanation" class="alert alert-danger">
+              <h5><%= pluralize(@member.errors.count, "error") %> prohibited this member from being saved:</h5>
+              <ul>
+                <% @member.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- Name Field -->
+          <div class="form-floating mb-3">
+            <%= f.text_field :name, class: "form-control", placeholder: "Member Name", required: true %>
+            <%= f.label :name, "Member Name" %>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-floating mb-3">
+            <%= f.email_field :email, class: "form-control", placeholder: "Email", required: true %>
+            <%= f.label :email, "Email" %>
+          </div>
+
+          <!-- Coupons Selection -->
+          <div class="form-group">
+            <%= f.label :coupons, "Coupons", class: "form-label" %>
+            <%= f.select :coupon_ids, options_from_collection_for_select(@coupons, :id, :name, @member.coupon_ids), 
+                          { prompt: "Select Coupons" }, 
+                          { class: "form-select", multiple: true } %>
+          </div>
+
+          <!-- Submit & Cancel Buttons -->
+          <div class="modal-footer">
+            <%= f.submit "Save Member", class: "btn btn-success" %>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

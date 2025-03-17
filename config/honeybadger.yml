@@ -1,0 +1,7 @@
+---
+# For more options, see https://docs.honeybadger.io/lib/ruby/gem-reference/configuration
+
+development:
+  api_key: hbp_leNJYeL1wgECwE4sEPidY8kcrnanWR3zY8mD
+  report_data: true
+

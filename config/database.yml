@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: postgres
+  password: postgres  
+  host: localhost
+
+development:
+  <<: *default
+  database: threadingbrow
+
+test:
+  <<: *default
+  database: threadingbrow_test
+
+
+production:
+  <<: *default
+  database: threadingbrow

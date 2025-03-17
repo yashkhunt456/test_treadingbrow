@@ -1,0 +1,76 @@
+= form_with model: [:admin, @coupon], local: true do |f|
+  - if @coupon.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@coupon.errors.count, "error")} prohibited this coupon from being saved:"
+      %ul
+        - @coupon.errors.full_messages.each do |message|
+          %li= message
+
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: "form-control", required: true
+
+  .form-group
+    = f.label :discount
+    = f.number_field :discount, class: "form-control", step: "0.01", required: true
+
+  %h3 Select Services:
+  #services-container
+    - if @coupon.coupon_services.any?
+      - @coupon.coupon_services.each_with_index do |coupon_service, index|
+        .service-group
+          .form-group
+            = label_tag "coupon[services][#{index}][service_id]", "Service"
+            = select_tag "coupon[services][#{index}][service_id]", 
+              options_from_collection_for_select(@services, :id, :name, coupon_service.service_id), 
+              include_blank: "Select Service", class: "form-control service-dropdown"
+
+          .form-group
+            = label_tag "coupon[services][#{index}][quantity]", "Quantity"
+            = number_field_tag "coupon[services][#{index}][quantity]", coupon_service.quantity || 1, min: 1, class: "form-control"
+
+    - else
+      .service-group
+        .form-group
+          = label_tag "coupon[services][0][service_id]", "Service"
+          = select_tag "coupon[services][0][service_id]", 
+            options_from_collection_for_select(@services, :id, :name), 
+            include_blank: "Select Service", class: "form-control service-dropdown"
+
+        .form-group
+          = label_tag "coupon[services][0][quantity]", "Quantity"
+          = number_field_tag "coupon[services][0][quantity]", 1, min: 1, class: "form-control"
+
+  .form-group
+    = f.submit @coupon.new_record? ? "Create Coupon" : "Update Coupon", class: "btn btn-primary"
+    = link_to "Cancel", admin_coupons_path, class: "btn btn-secondary"
+
+:javascript
+  document.addEventListener("DOMContentLoaded", function() {
+    let container = document.getElementById("services-container");
+    let addButton = document.getElementById("add-service");
+    
+    addButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      let index = container.getElementsByClassName("service-group").length;
+
+      let newServiceGroup = document.createElement("div");
+      newServiceGroup.classList.add("service-group");
+
+      newServiceGroup.innerHTML = `
+        <div class="form-group">
+          <label for="coupon_services_${index}_service_id">Service</label>
+          <select name="coupon[services][${index}][service_id]" class="form-control service-dropdown">
+            <option value="">Select Service</option>
+            ${#{@services.map { |s| "<option value='#{s.id}'>#{s.name} - $#{s.price}</option>" }.join}}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="coupon_services_${index}_quantity">Quantity</label>
+          <input type="number" name="coupon[services][${index}][quantity]" min="1" class="form-control" value="1">
+        </div>
+      `;
+
+      container.appendChild(newServiceGroup);
+    });
+  });

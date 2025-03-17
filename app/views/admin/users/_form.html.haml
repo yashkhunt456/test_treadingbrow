@@ -1,0 +1,21 @@
+%h1= @user.new_record? ? "Create User" : "Edit User"
+= form_with model: [:admin, @user], local: true do |f|
+  .form-group
+    
+    = f.label :name
+    = f.text_field :name, class: "form-control", required: true
+   
+    = f.label :email
+    = f.email_field :email, class: "form-control", required: true
+
+  - if @user.new_record?
+    .form-group
+      = f.label :password
+      = f.password_field :password, class: "form-control", required: true
+    .form-group
+      = f.label :password_confirmation
+      = f.password_field :password_confirmation, class: "form-control", required: true
+
+  .form-group
+    = f.submit @user.new_record? ? "Create User" : "Update User", class: "btn btn-primary"
+    = link_to "Cancel", admin_users_path, class: "btn btn-secondary"

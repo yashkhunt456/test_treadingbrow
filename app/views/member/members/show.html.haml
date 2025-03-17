@@ -1,0 +1,16 @@
+%h1= @member.name
+
+%p
+  %strong Email:
+  = @member.email
+
+%p
+  %strong Services:
+  = @member.services.map(&:name).join(", ")
+
+%p
+  %strong Coupons:
+  = @member.coupons.map(&:name).join(", ")
+
+= link_to "Edit", edit_member_member_path(@member), class: "btn btn-warning"
+= link_to "Back", member_members_path, class: "btn btn-secondary"

@@ -1,0 +1,45 @@
+<div class="red-shadow top"></div>
+<div class="red-shadow bottom"></div>
+<div class="abstarct-top"></div>
+<div class="abstarct-bottom"></div>
+<div class="login-wrapper">
+  <div class="login-container">
+    <div class="logo">
+      <%= image_tag("logo.png", alt: "logo") %>
+    </div>
+    <div class="login-form full-withradius">
+      <h1>Change Your Password</h1>
+
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+        <%= f.hidden_field :reset_password_token %>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.875 1.41669L13.4583 2.83335M13.4583 2.83335L15.5833 4.95835L13.1041 7.43752L10.9791 5.31252M13.4583 2.83335L10.9791 5.31252M8.06787 8.22377C8.43361 8.58464 8.72435 9.0143 8.92336 9.488C9.12237 9.9617 9.22571 10.4701 9.22743 10.9839C9.22915 11.4977 9.12922 12.0068 8.93339 12.4818C8.73756 12.9568 8.4497 13.3884 8.08639 13.7517C7.72307 14.115 7.29148 14.4029 6.81646 14.5987C6.34143 14.7945 5.83237 14.8945 5.31857 14.8927C4.80476 14.891 4.29638 14.7877 3.82268 14.5887C3.34898 14.3897 2.91932 14.0989 2.55845 13.7332C1.84879 12.9984 1.45611 12.0143 1.46499 10.9929C1.47387 9.97138 1.88359 8.99425 2.60591 8.27194C3.32823 7.54962 4.30535 7.1399 5.32683 7.13102C6.3483 7.12214 7.3324 7.51482 8.06716 8.22448L8.06787 8.22377ZM8.06787 8.22377L10.9791 5.31252" stroke="#A7AFB3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="form-floating">
+            <%= f.password_field :password, class: "form-control", id: "NewPassword", placeholder: "New Password", autofocus: true, autocomplete: "new-password" %>
+            <label for="NewPassword">New Password</label>
+          </div>
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.875 1.41669L13.4583 2.83335M13.4583 2.83335L15.5833 4.95835L13.1041 7.43752L10.9791 5.31252M13.4583 2.83335L10.9791 5.31252M8.06787 8.22377C8.43361 8.58464 8.72435 9.0143 8.92336 9.488C9.12237 9.9617 9.22571 10.4701 9.22743 10.9839C9.22915 11.4977 9.12922 12.0068 8.93339 12.4818C8.73756 12.9568 8.4497 13.3884 8.08639 13.7517C7.72307 14.115 7.29148 14.4029 6.81646 14.5987C6.34143 14.7945 5.83237 14.8945 5.31857 14.8927C4.80476 14.891 4.29638 14.7877 3.82268 14.5887C3.34898 14.3897 2.91932 14.0989 2.55845 13.7332C1.84879 12.9984 1.45611 12.0143 1.46499 10.9929C1.47387 9.97138 1.88359 8.99425 2.60591 8.27194C3.32823 7.54962 4.30535 7.1399 5.32683 7.13102C6.3483 7.12214 7.3324 7.51482 8.06716 8.22448L8.06787 8.22377ZM8.06787 8.22377L10.9791 5.31252" stroke="#A7AFB3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="form-floating">
+            <%= f.password_field :password_confirmation, class: "form-control", id: "ConfirmNewPassword", placeholder: "Confirm New Password", autocomplete: "new-password" %>
+            <label for="ConfirmNewPassword">Confirm New Password</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4 w-100">Change Password</button>
+      <% end %>
+    </div>
+  </div>
+</div>

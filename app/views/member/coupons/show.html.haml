@@ -1,0 +1,18 @@
+%h1= @coupon.name
+
+%p
+  %strong Discount:
+  = number_to_currency(@coupon.discount)
+
+%p
+  %strong Created At:
+  = @coupon.created_at.strftime("%B %d, %Y %I:%M %p")
+
+%p
+  %strong Updated At:
+  = @coupon.updated_at.strftime("%B %d, %Y %I:%M %p")
+
+
+= link_to "Edit", edit_member_coupon_path(@coupon), class: "btn btn-warning"
+= link_to "Back", member_coupons_path, class: "btn btn-secondary"
+= link_to "Delete", member_coupon_path(@coupon), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger"

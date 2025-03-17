@@ -1,0 +1,92 @@
+<div class="container-fluid px-md-4 pt-md-4 main-content">
+  <div class="home-two-col">
+    <div class="col-left">
+      <div class="combo-home">
+        <% @coupons.each do |coupon| %>
+          <div class="combo-box">
+            <div class="coupon-title">
+              <span class="coupon-name"><%= coupon.name %></span>
+            </div>
+            <div class="combo-body">
+              <% total_service_price = coupon.coupon_services.sum { |cs| (cs.service&.price.to_f || 0) * (cs.quantity.to_i || 0) } %>
+              <% discount = coupon.discount.to_f || 0 %>
+              <% final_price = total_service_price - discount %>
+              <span class="combo-price">
+                <%= number_to_currency([final_price, 0].max) %>
+                <small><%= number_to_currency(total_service_price) %></small>
+              </span>
+              <% if coupon.coupon_services.any? %>
+                <% coupon.coupon_services.each do |cs| %>
+                  <div class="combo-service-name">
+                    <%= "#{cs.service&.name || 'Unknown Service'} (#{cs.quantity}x)" %>
+                  </div>
+                <% end %>
+              <% else %>
+                <div class="combo-service-name text-muted">No services assigned</div>
+              <% end %>
+              <div class="action-block">
+                <span>
+                  <%= link_to edit_admin_coupon_path(coupon), class: "edit-coupon-btn" do %>
+                    <!-- Edit Icon SVG -->
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 15H15.75" stroke="#C5BEBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M12.375 2.62499C12.6734 2.32662 13.078 2.159 13.5 2.159C13.7089 2.159 13.9158 2.20015 14.1088 2.2801C14.3019 2.36006 14.4773 2.47725 14.625 2.62499C14.7727 2.77272 14.8899 2.94811 14.9699 3.14114C15.0498 3.33417 15.091 3.54105 15.091 3.74999C15.091 3.95892 15.0498 4.1658 14.9699 4.35883C14.8899 4.55186 14.7727 4.72725 14.625 4.87499L5.25 14.25L2.25 15L3 12L12.375 2.62499Z" stroke="#C5BEBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  <% end %>
+                </span>
+                <span>
+                  <%= link_to admin_coupon_path(coupon), method: :delete, data: { confirm: "Are you sure?" }, class: "delete-coupon-btn" do %>
+                    <!-- Delete Icon SVG -->
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.25 4.5H3.75H15.75" stroke="#C5BEBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72065 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5" stroke="#C5BEBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M7.5 8.25V12.75" stroke="#C5BEBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M10.5 8.25V12.75" stroke="#C5BEBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  <% end %>
+                </span>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <button class="btn btn-text"> View all</button>
+  </div>
+  <div class="col-right">
+    <table>
+      <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @members.each do |member| %>
+        <tr>
+          <td><%= member.id.to_s.rjust(6, '0').prepend('CS') %></td>
+          <td><%= member.name %></td>
+          <td><%= member.email %></td>
+          <td>
+            <% status_class = '' %>
+            <span class="status <%= status_class %>">
+              'sdcf
+            </span>
+          </td>
+          <td>
+            <span class="action-icons"><%= link_to image_tag('view.svg'), admin_member_path(member) %></span>
+            <span class="action-icons"><%= link_to image_tag('edit.svg'), edit_admin_member_path(member) %></span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+
+        
+    </table>
+  </div>
+</div>
+</div>
+</div>

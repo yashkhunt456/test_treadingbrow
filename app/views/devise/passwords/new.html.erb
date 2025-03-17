@@ -1,0 +1,40 @@
+<div class="red-shadow top"></div>
+<div class="red-shadow bottom"></div>
+<div class="abstarct-top"></div>
+<div class="abstarct-bottom"></div>
+
+<div class="login-wrapper">
+  <div class="login-container">
+    <div class="logo">
+      <%= image_tag("logo.png", alt: "logo") %>
+    </div>
+
+    <div class="login-form full-withradius">
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+        
+        <h1>Forgot Password</h1>
+
+        <!-- Display Devise error messages -->
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <!-- Email Input -->
+        <div class="input-group mb-3">
+          <span class="input-group-text">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.83329 2.83331H14.1666C14.9458 2.83331 15.5833 3.47081 15.5833 4.24998V12.75C15.5833 13.5291 14.9458 14.1666 14.1666 14.1666H2.83329C2.05413 14.1666 1.41663 13.5291 1.41663 12.75V4.24998C1.41663 3.47081 2.05413 2.83331 2.83329 2.83331Z" stroke="#A7AFB3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15.5833 4.25L8.49996 9.20833L1.41663 4.25" stroke="#A7AFB3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="form-floating">
+            <%= f.email_field :email, class: "form-control", id: "EmailAddress", placeholder: "Email Address", required: true, autofocus: true, autocomplete: "email" %>
+            <%= f.label :email, "Email Address" %>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <%= f.submit "Request Password Change", class: "btn btn-primary mt-4 w-100" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
