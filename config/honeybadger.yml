@@ -2,6 +2,6 @@
 # For more options, see https://docs.honeybadger.io/lib/ruby/gem-reference/configuration
 
 development:
-  api_key: hbp_leNJYeL1wgECwE4sEPidY8kcrnanWR3zY8mD
+  api_key: hbp_8JumqVWJOMoxugX2mwqxi66EgKjSQ24vU1VV
   report_data: true
 
