@@ -62,8 +62,8 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
 
-  Honeybadger.configure do |config|
-    config.api_key = 'hbp_leNJYeL1wgECwE4sEPidY8kcrnanWR3zY8mD'
-    config.report_data = true # Allow error reporting in development
-  end
+  # Honeybadger.configure do |config|
+  #   config.api_key = 'hbp_leNJYeL1wgECwE4sEPidY8kcrnanWR3zY8mD'
+  #   config.report_data = true # Allow error reporting in development
+  # end
 end
